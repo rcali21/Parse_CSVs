@@ -1,30 +1,29 @@
-import os 
+import os
 import pandas as pd
 import glob
 
 
-
-path1 = input('Specify path to fMRI_prep dir:')
+path1 = input("Specify path to fMRI_prep dir:")
 os.chdir(path1)
 
-# Intialize empty list for subject paths to be appended to 
+# Intialize empty list for subject paths to be appended to
 path_list = []
 
 # Glob to locate .tsv files
-for x in glob.glob('sub*/ses-1/func/'):
+for x in glob.glob("sub*/ses-1/func/"):
     y = os.listdir(x)
 
     for item in y:
-        if item.endswith('.tsv'):
+        if item.endswith(".tsv"):
             # Append path to each .tsv file to list
             path_list.append(os.path.join(path1, x, item))
 
 
-# Initialize empty df to append to 
+# Initialize empty df to append to
 
 output_df = pd.DataFrame()
 
-#Initialize empty lists to append means from each subject to
+# Initialize empty lists to append means from each subject to
 sub_list = []
 fd_list = []
 dvars_list = []
@@ -37,7 +36,7 @@ for target in path_list:
     dirs_stripped = os.path.dirname(os.path.dirname(func_dirs))
     sub_id = os.path.basename(dirs_stripped)
     sub_list.append(sub_id)
-    df = pd.read_csv(target, sep='\t')
+    df = pd.read_csv(target, sep="\t")
     # Locate desired columns and calculate the means for each
     r = df["framewise_displacement"].mean()
     a = df["dvars"].mean()
@@ -57,9 +56,8 @@ output_df["DVARS"] = dvars_list
 output_df["RMSD"] = rmsd_list
 output_df["BOLD_Volumes"] = bold_vols_list
 
-# Specify output .csv filename 
-output_file = input('Specify desired filename for csv:')
+# Specify output .csv filename
+output_file = input("Specify desired filename for csv:")
 
 # Save to .csv
-output_df.to_csv(output_file, sep='\t', encoding='utf-8')
-
+output_df.to_csv(output_file, sep="\t", encoding="utf-8")
